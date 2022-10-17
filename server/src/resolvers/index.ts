@@ -38,12 +38,12 @@ export const resolvers = {
                 throw new GraphQLError(`Error: ${err}`);
             }
         },
-        async loginUser<T>(parent: T, args: TUser, context) {
+        async loginUser<T>(parent: T, args: TUser) {
             try {
                 const { email, password } = args;
                 const user = await User.findOne({ email });
                 if (user && await bcrypt.compare(password, user.password)) {
-                    console.log('context: ', context);
+                    console.log(user);
                     return { ...user._doc };
                 }
                 return new GraphQLError('Incorrect email or password!');

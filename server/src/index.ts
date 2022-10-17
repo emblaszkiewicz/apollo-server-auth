@@ -38,7 +38,6 @@ async function startApolloServer() {
         expressMiddleware(server, {
             context: async ({ req }: any) => (
                 {
-                    token: req.headers.token,
                     session: req.session,
             }),
         }),
