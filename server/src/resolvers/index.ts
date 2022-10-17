@@ -3,7 +3,6 @@ import User from '../models/User.js';
 import { TBook, TUser, TGetUser, TEditUser } from '../types/types.js';
 import { GraphQLError } from 'graphql';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 
 export const resolvers = {
     Query: {
@@ -16,10 +15,14 @@ export const resolvers = {
     },
     Mutation: {
         async addBook<T>(parent: T, args: TBook) {
-            const { bookAuthor, bookTitle, bookDesc } = args;
-            const newBook = new Book({ bookAuthor, bookTitle, bookDesc });
-            await newBook.save();
-            return newBook;
+            try {
+                const { bookAuthor, bookTitle, bookDesc } = args;
+                const newBook = new Book({ bookAuthor, bookTitle, bookDesc });
+                await newBook.save();
+                return newBook;
+            } catch (err) {
+                throw new GraphQLError(`Error: ${err}`);
+            }
         },
         async registerUser<T>(parent: T, args: TUser) {
             try {
@@ -29,51 +32,27 @@ export const resolvers = {
                 }
                 const codedPassword = await bcrypt.hash(password, 10);
                 const newUser = new User({ userName, email, password: codedPassword });
-                const token = jwt.sign(
-                    {
-                        id: newUser._id,
-                        email: newUser.email
-                    },
-                    process.env.JWT_SECRET || '',
-                    {
-                        expiresIn: '1d'
-                    }
-                );
-                newUser.token = token;
                 await newUser.save();
-                return newUser;
+                return { ...newUser._doc };
             } catch (err) {
                 throw new GraphQLError(`Error: ${err}`);
             }
         },
-        async loginUser<T>(parent: T, args: TUser) {
+        async loginUser<T>(parent: T, args: TUser, context) {
             try {
                 const { email, password } = args;
                 const user = await User.findOne({ email });
                 if (user && await bcrypt.compare(password, user.password)) {
-                    const token = jwt.sign(
-                        {
-                            id: user._id,
-                            email: user.email
-                        },
-                        process.env.JWT_SECRET || '',
-                        {
-                            expiresIn: '1d'
-                        }
-                    );
-                    user.token = token;
-                    return {user};
+                    console.log('context: ', context);
+                    return { ...user._doc };
                 }
                 return new GraphQLError('Incorrect email or password!');
             } catch (err) {
                 throw new GraphQLError(`Error: ${err}`);
             }
         },
-        async editUser<T>(parent: T, args: TEditUser, context: TUser) {
+        async editUser<T>(parent: T, args: TEditUser) {
             try {
-                if (context.role !== 'admin') {
-                    return new GraphQLError('You have no permission!');
-                }
                 const { id, userName } = args;
                 await User.updateOne(
                     { _id: id },
@@ -83,6 +62,9 @@ export const resolvers = {
             } catch (err) {
                 throw new GraphQLError(`Error: ${err}`);
             }
+        },
+        async logout<T>(parent: T, args: T, context: T) {
+            console.log(context);
         }
     }
 };

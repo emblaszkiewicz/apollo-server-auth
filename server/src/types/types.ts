@@ -9,12 +9,16 @@ export type TUser = {
     email: string;
     password: string;
     role: string;
-    token: string;
+    _doc: any;
+};
+
+export type TMyContext =  {
+    token?: String;
 };
 
 export type TGetUser = {
     id: string;
-}
+};
 
 export type TEditUser = {
     id: string;

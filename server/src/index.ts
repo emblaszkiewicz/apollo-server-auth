@@ -1,28 +1,51 @@
+import 'dotenv/config';
 import { ApolloServer } from '@apollo/server';
-import { startStandaloneServer } from '@apollo/server/standalone';
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import { expressMiddleware } from '@apollo/server/express4';
+import express from 'express';
+import session from 'express-session';
+import bodyParser from 'body-parser';
+import http from 'http';
+import cors from 'cors';
 import { typeDefs } from './typeDefs/index.js';
 import { resolvers } from './resolvers/index.js';
-import 'dotenv/config';
 import mongoose from 'mongoose';
-import { GraphQLError } from 'graphql';
-import User from './models/User.js';
+import { TMyContext } from './types/types';
 
-const server = new ApolloServer({
-    typeDefs,
-    resolvers,
-});
+async function startApolloServer() {
+    mongoose.connect(process.env.DB_URI)
+        .then(() => console.log('Connected to the database!'));
+    const app = express();
+    const httpServer = http.createServer(app);
+    const server = new ApolloServer<TMyContext>({
+        typeDefs,
+        resolvers,
+        plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+    });
+    await server.start();
+    app.use(
+        '/',
+        cors<cors.CorsRequest>(),
+        bodyParser.json(),
+        session({
+            secret: "secret",
+            resave: false,
+            saveUninitialized: true,
+            cookie: {
+                maxAge: 1000 * 60 * 60 * 24,
+            },
+        }),
+        expressMiddleware(server, {
+            context: async ({ req }: any) => (
+                {
+                    token: req.headers.token,
+                    session: req.session,
+            }),
+        }),
+    );
+    await new Promise<void>((resolve) =>
+        httpServer.listen({ port: 4000 }, resolve),
+    );
+}
 
-mongoose.connect(process.env.DB_URI)
-    .then(() => console.log('Connected to the database!'));
-
-const { url } = await startStandaloneServer(server, {
-    context: async ({ req }) => {
-        const token = req.headers.token || '';
-        const user = await User.findOne({ token });
-        if(!user) throw new GraphQLError('User is not authenticated!');
-        return user;
-    },
-    listen: { port: 4000 },
-});
-
-console.log(`Server ready at: ${url}`);
+startApolloServer().then(() => console.log(`Server ready at http://localhost:4000/`));

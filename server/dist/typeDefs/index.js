@@ -9,7 +9,6 @@ type User {
   email: String
   password: String
   role: String
-  token: String
 }
 type Query {
   getAllBooks: [Book]
@@ -17,8 +16,9 @@ type Query {
 }
 type Mutation {
   addBook(bookAuthor: String, bookTitle: String, bookDesc: String): Book
-  registerUser(userName: String, email: String, password: String): User
-  loginUser(email: String, password: String): User
+  registerUser(userName: String, email: String, password: String): User!
+  loginUser(email: String, password: String): User!
   editUser(id: ID, userName: String): User
+  logout: Boolean
 }
 `;
