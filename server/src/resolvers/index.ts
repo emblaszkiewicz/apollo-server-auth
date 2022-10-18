@@ -14,8 +14,11 @@ export const resolvers = {
         }
     },
     Mutation: {
-        async addBook<T>(parent: T, args: TBook) {
+        async addBook<T>(parent: T, args: TBook, context: any) {
             try {
+                if(!context.user) {
+                    return new GraphQLError('You must log in!');
+                }
                 const { bookAuthor, bookTitle, bookDesc } = args;
                 const newBook = new Book({ bookAuthor, bookTitle, bookDesc });
                 await newBook.save();
@@ -38,12 +41,12 @@ export const resolvers = {
                 throw new GraphQLError(`Error: ${err}`);
             }
         },
-        async loginUser<T>(parent: T, args: TUser) {
+        async loginUser<T>(parent: T, args: TUser, context: any) {
             try {
                 const { email, password } = args;
                 const user = await User.findOne({ email });
                 if (user && await bcrypt.compare(password, user.password)) {
-                    console.log(user);
+                    context.session.userName = user.userName;
                     return { ...user._doc };
                 }
                 return new GraphQLError('Incorrect email or password!');
@@ -63,8 +66,8 @@ export const resolvers = {
                 throw new GraphQLError(`Error: ${err}`);
             }
         },
-        async logout<T>(parent: T, args: T, context: T) {
-            console.log(context);
+        async logout(parent: any, args: any, context: any) {
+            context.session.destroy();
         }
     }
 };

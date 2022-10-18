@@ -11,6 +11,7 @@ import { typeDefs } from './typeDefs/index.js';
 import { resolvers } from './resolvers/index.js';
 import mongoose from 'mongoose';
 import { TMyContext } from './types/types';
+import User from './models/User.js';
 
 async function startApolloServer() {
     mongoose.connect(process.env.DB_URI)
@@ -39,7 +40,8 @@ async function startApolloServer() {
             context: async ({ req }: any) => (
                 {
                     session: req.session,
-            }),
+                    user: await User.findOne({ userName: req.session.userName })
+                }),
         }),
     );
     await new Promise<void>((resolve) =>

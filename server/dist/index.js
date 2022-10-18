@@ -10,6 +10,7 @@ import cors from 'cors';
 import { typeDefs } from './typeDefs/index.js';
 import { resolvers } from './resolvers/index.js';
 import mongoose from 'mongoose';
+import User from './models/User.js';
 async function startApolloServer() {
     mongoose.connect(process.env.DB_URI)
         .then(() => console.log('Connected to the database!'));
@@ -30,8 +31,8 @@ async function startApolloServer() {
         },
     }), expressMiddleware(server, {
         context: async ({ req }) => ({
-            token: req.headers.token,
             session: req.session,
+            user: await User.findOne({ userName: req.session.userName })
         }),
     }));
     await new Promise((resolve) => httpServer.listen({ port: 4000 }, resolve));
