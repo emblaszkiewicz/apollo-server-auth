@@ -9,16 +9,11 @@ export const booksResolvers = {
         }
     },
     Mutation: {
-        async addBook<T>(parent: T, args: TBook, context: any) {
+        async addBook<T>(parent: T, args: TBook) {
             try {
-                if(!context.user) {
-                    console.log(context);
-                    return new GraphQLError('You must log in!');
-                }
                 const { bookAuthor, bookTitle, bookDesc } = args;
                 const newBook = new Book({ bookAuthor, bookTitle, bookDesc });
                 await newBook.save();
-                console.log(context);
                 return newBook;
             } catch (err) {
                 throw new GraphQLError(`Error: ${err}`);

@@ -1,3 +1,5 @@
+import { Types } from 'mongoose';
+
 export type TBook = {
     bookAuthor: string;
     bookTitle: string;
@@ -5,6 +7,7 @@ export type TBook = {
 };
 
 export type TUser = {
+    _id: Types.ObjectId;
     userName: string;
     email: string;
     password: string;
@@ -18,4 +21,18 @@ export type TGetUser = {
 export type TEditUser = {
     id: string;
     userName: string;
+};
+
+export type TContext<T> = {
+    session: {
+        destroy: Function;
+        cookie: {
+            path: string;
+            _expires: Date;
+            originalMaxAge: number;
+            httpOnly: boolean;
+        };
+        userName: string;
+    };
+    user: T;
 };

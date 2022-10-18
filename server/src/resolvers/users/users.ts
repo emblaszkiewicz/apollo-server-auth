@@ -1,6 +1,6 @@
 import User from '../../models/User.js';
 import bcrypt from 'bcryptjs';
-import { TEditUser, TGetUser, TUser } from '../../types/types.js';
+import { TEditUser, TGetUser, TUser, TContext } from '../../types/types.js';
 import { GraphQLError } from 'graphql';
 
 export const usersResolvers = {
@@ -24,13 +24,12 @@ export const usersResolvers = {
                 throw new GraphQLError(`Error: ${err}`);
             }
         },
-        async loginUser<T>(parent: T, args: TUser, context: any) {
+        async loginUser<T>(parent: T, args: TUser, context: TContext<TUser>) {
             try {
                 const { email, password } = args;
                 const user = await User.findOne({ email });
                 if (user && await bcrypt.compare(password, user.password)) {
                     context.session.userName = user.userName;
-                    console.log(context);
                     return user;
                 }
                 return new GraphQLError('Incorrect email or password!');
@@ -50,9 +49,8 @@ export const usersResolvers = {
                 throw new GraphQLError(`Error: ${err}`);
             }
         },
-        async logout(parent: any, args: any, context: any) {
+        async logout<T>(parent: T, args: T, context: TContext<TUser>) {
             context.session.destroy();
-            console.log(context);
         }
     },
 };
