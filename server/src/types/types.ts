@@ -12,10 +12,6 @@ export type TUser = {
     _doc: any;
 };
 
-export type TMyContext =  {
-    token?: String;
-};
-
 export type TGetUser = {
     id: string;
 };

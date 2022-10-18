@@ -10,7 +10,6 @@ import cors from 'cors';
 import { typeDefs } from './typeDefs/index.js';
 import { resolvers } from './resolvers/index.js';
 import mongoose from 'mongoose';
-import { TMyContext } from './types/types';
 import User from './models/User.js';
 
 async function startApolloServer() {
@@ -18,7 +17,7 @@ async function startApolloServer() {
         .then(() => console.log('Connected to the database!'));
     const app = express();
     const httpServer = http.createServer(app);
-    const server = new ApolloServer<TMyContext>({
+    const server = new ApolloServer({
         typeDefs,
         resolvers,
         plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
