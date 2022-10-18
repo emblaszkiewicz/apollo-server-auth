@@ -2,10 +2,10 @@
 import { shield, rule } from 'graphql-shield';
 
 const isLogIn = rule()(async (parent, args, context) => {
-    if(context.user) return context.session.isLoggin;
+    if(context.user) return context.session.isLogin;
 });
 
-const permissions =  shield({
+const permissions = shield({
     Query: {
         getAllBooks: (isLogIn),
         getUser: (isLogIn)
@@ -17,4 +17,5 @@ const permissions =  shield({
     }
 });
 
-export default permissions;*/
+export default permissions;
+*/
