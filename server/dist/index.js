@@ -12,17 +12,18 @@ import { resolvers } from './resolvers/index.js';
 import mongoose from 'mongoose';
 import User from './models/User.js';
 async function startApolloServer() {
-    mongoose.connect(process.env.DB_URI)
+    mongoose.connect(process.env.DB_URI) //<-- connect database
         .then(() => console.log('Connected to the database!'));
-    const app = express();
+    const app = express(); //<--- run express server
     const httpServer = http.createServer(app);
     const server = new ApolloServer({
         typeDefs,
         resolvers,
-        plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+        plugins: [ApolloServerPluginDrainHttpServer({ httpServer })], //<-- add plugins for httpServer
     });
-    await server.start();
-    app.use('/', cors(), bodyParser.json(), session({
+    await server.start(); //<-- start server
+    app.use(//<-- set middleware
+    '/', cors(), bodyParser.json(), session({
         secret: "secret",
         resave: false,
         saveUninitialized: true,

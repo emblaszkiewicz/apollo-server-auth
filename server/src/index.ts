@@ -13,17 +13,17 @@ import mongoose from 'mongoose';
 import User from './models/User.js';
 
 async function startApolloServer() {
-    mongoose.connect(process.env.DB_URI)
+    mongoose.connect(process.env.DB_URI)        //<-- connect database
         .then(() => console.log('Connected to the database!'));
-    const app = express();
+    const app = express();      //<--- run express server
     const httpServer = http.createServer(app);
-    const server = new ApolloServer({
+    const server = new ApolloServer({       //<-- new ApolloServer instance
         typeDefs,
         resolvers,
-        plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+        plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],       //<-- add plugins for httpServer
     });
-    await server.start();
-    app.use(
+    await server.start();       //<-- start server
+    app.use(        //<-- set middleware
         '/',
         cors<cors.CorsRequest>(),
         bodyParser.json(),
@@ -35,7 +35,7 @@ async function startApolloServer() {
                 maxAge: 1000 * 60 * 60 * 24,
             },
         }),
-        expressMiddleware(server, {
+        expressMiddleware(server, {     //<-- add to apollo context
             context: async ({ req }: any) => (
                 {
                     session: req.session,
