@@ -9,7 +9,6 @@ export type TUser = {
     email: string;
     password: string;
     role: string;
-    _doc: any;
 };
 
 export type TGetUser = {

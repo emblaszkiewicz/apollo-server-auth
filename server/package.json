@@ -22,7 +22,6 @@
     "express": "^4.18.2",
     "express-session": "^1.17.3",
     "graphql": "^16.6.0",
-    "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.6.5",
     "typescript": "^4.8.4"
   }

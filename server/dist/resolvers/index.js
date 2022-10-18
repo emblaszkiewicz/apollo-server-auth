@@ -37,7 +37,7 @@ export const resolvers = {
                 const codedPassword = await bcrypt.hash(password, 10);
                 const newUser = new User({ userName, email, password: codedPassword });
                 await newUser.save();
-                return { ...newUser._doc };
+                return newUser;
             }
             catch (err) {
                 throw new GraphQLError(`Error: ${err}`);
@@ -50,7 +50,7 @@ export const resolvers = {
                 if (user && await bcrypt.compare(password, user.password)) {
                     context.session.userName = user.userName;
                     console.log(context);
-                    return { ...user._doc };
+                    return user;
                 }
                 return new GraphQLError('Incorrect email or password!');
             }
