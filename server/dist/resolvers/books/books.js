@@ -4,19 +4,26 @@ export const booksResolvers = {
     Query: {
         async getAllBooks() {
             return Book.find();
+        },
+        async pagination(parent, args) {
+            const { limitPerPage, page } = args;
+            const books = await Book.find()
+                .limit(limitPerPage)
+                .skip((page - 1) * limitPerPage);
+            const count = await Book.countDocuments();
+            return {
+                books,
+                page,
+                totalPages: Math.ceil(count / limitPerPage)
+            };
         }
     },
     Mutation: {
-        async addBook(parent, args, context) {
+        async addBook(parent, args) {
             try {
-                if (!context.user) {
-                    console.log(context);
-                    return new GraphQLError('You must log in!');
-                }
                 const { bookAuthor, bookTitle, bookDesc } = args;
                 const newBook = new Book({ bookAuthor, bookTitle, bookDesc });
                 await newBook.save();
-                console.log(context);
                 return newBook;
             }
             catch (err) {

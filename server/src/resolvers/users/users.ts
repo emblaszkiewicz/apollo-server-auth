@@ -51,6 +51,7 @@ export const usersResolvers = {
         },
         async logout<T>(parent: T, args: T, context: TContext<TUser>) {
             context.session.destroy();
+            return true;
         }
     },
 };
