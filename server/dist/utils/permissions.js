@@ -1,14 +1,12 @@
-/*
 import { shield, rule } from 'graphql-shield';
-
 const isLogIn = rule()(async (parent, args, context) => {
-    if(context.user) return context.session.isLogin;
+    return context.session.isLogin;
 });
-
 const permissions = shield({
     Query: {
         getAllBooks: (isLogIn),
-        getUser: (isLogIn)
+        getUser: (isLogIn),
+        pagination: (isLogIn)
     },
     Mutation: {
         addBook: (isLogIn),
@@ -16,6 +14,4 @@ const permissions = shield({
         logout: (isLogIn)
     }
 });
-
 export default permissions;
-*/

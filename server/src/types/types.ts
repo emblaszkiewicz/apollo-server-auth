@@ -33,6 +33,7 @@ export type TContext<T> = {
             httpOnly: boolean;
         };
         userName: string;
+        isLogin: boolean;
     };
     user: T;
 };

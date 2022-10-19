@@ -11,14 +11,19 @@ import { typeDefs } from './typeDefs/index.js';
 import { resolvers } from './resolvers/index.js';
 import mongoose from 'mongoose';
 import User from './models/User.js';
+import { applyMiddleware } from 'graphql-middleware';
+import { makeExecutableSchema } from "@graphql-tools/schema";
+import permissions from './utils/permissions.js';
 async function startApolloServer() {
     mongoose.connect(process.env.DB_URI) //<-- connect database
         .then(() => console.log('Connected to the database!'));
     const app = express(); //<--- run express server
     const httpServer = http.createServer(app);
     const server = new ApolloServer({
-        typeDefs,
-        resolvers,
+        schema: applyMiddleware(makeExecutableSchema({
+            typeDefs,
+            resolvers,
+        }), permissions),
         plugins: [ApolloServerPluginDrainHttpServer({ httpServer })], //<-- add plugins for httpServer
     });
     await server.start(); //<-- start server

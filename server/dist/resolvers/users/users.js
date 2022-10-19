@@ -29,6 +29,7 @@ export const usersResolvers = {
                 const user = await User.findOne({ email });
                 if (user && await bcrypt.compare(password, user.password)) {
                     context.session.userName = user.userName;
+                    context.session.isLogin = true;
                     return user;
                 }
                 return new GraphQLError('Incorrect email or password!');
