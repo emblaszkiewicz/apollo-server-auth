@@ -1,6 +1,7 @@
 import { shield, rule } from 'graphql-shield';
+import { TContext, TUser } from '../types/types';
 
-const isLogIn = rule()(async (parent, args, context) => {
+const isLogIn = rule()(async<T> (parent: T, args: T, context: TContext<TUser>) => {
     return context.session.isLogin;
 });
 
