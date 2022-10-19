@@ -1,5 +1,4 @@
 import { Types } from 'mongoose';
-import { Request } from 'express';
 
 export type TBook = {
     bookAuthor: string;
@@ -24,19 +23,21 @@ export type TEditUser = {
     userName: string;
 };
 
-export type TContext<T> = {
-    session: {
-        destroy: Function;
-        cookie: {
-            path: string;
-            _expires: Date;
-            originalMaxAge: number;
-            httpOnly: boolean;
-        };
-        userName: string;
-        isLogin: boolean;
-        isAdmin: boolean;
+export type TSession = {
+    destroy: Function;
+    cookie: {
+        path: string;
+        _expires: Date;
+        originalMaxAge: number;
+        httpOnly: boolean;
     };
+    userName: string;
+    isLogin: boolean;
+    isAdmin: boolean;
+}
+
+export type TContext<T> = {
+    session: TSession;
     user: T;
 };
 
@@ -44,3 +45,9 @@ export type TPagination = {
     limitPerPage: number;
     page: number;
 };
+
+declare module "express" {
+    export interface Request {
+        session: TSession;
+    }
+}

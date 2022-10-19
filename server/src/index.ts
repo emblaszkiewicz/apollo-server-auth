@@ -38,7 +38,7 @@ async function startApolloServer() {
     app.use(        //<-- set middleware
         ...middlewares,
         expressMiddleware(server, {     //<-- add to apollo context
-            context: async({ req }: any) => (
+            context: async({ req }) => (
                 {
                     session: req.session,
                     user: await User.findOne({ userName: req.session.userName })
