@@ -1,9 +1,10 @@
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import session from 'express-session';
+
 const middlewares = [
     '/',
-    cors(),
+    cors<cors.CorsRequest>(),
     bodyParser.json(),
     session({
         secret: "secret",
@@ -14,4 +15,5 @@ const middlewares = [
         },
     })
 ];
+
 export default middlewares;

@@ -35,6 +35,7 @@ export type TContext<T> = {
         };
         userName: string;
         isLogin: boolean;
+        isAdmin: boolean;
     };
     user: T;
 };

@@ -1,6 +1,9 @@
-import { shield, rule } from 'graphql-shield';
+import { shield, rule, and } from 'graphql-shield';
 const isLogIn = rule()(async (parent, args, context) => {
     return context.session.isLogin;
+});
+const isAdmin = rule()(async (parent, args, context) => {
+    return context.user.role === 'admin';
 });
 const permissions = shield({
     Query: {
@@ -10,7 +13,7 @@ const permissions = shield({
     },
     Mutation: {
         addBook: (isLogIn),
-        editUser: (isLogIn),
+        editUser: and(isLogIn, isAdmin),
         logout: (isLogIn)
     }
 });

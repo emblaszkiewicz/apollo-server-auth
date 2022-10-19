@@ -27,7 +27,6 @@ export const booksResolvers = {
                 const newBook = new Book({ bookAuthor, bookTitle, bookDesc });
                 await newBook.save();
                 await pubsub.publish('BOOK_CREATED', { bookAdded: newBook });
-                console.log(pubsub);
                 return newBook;
             }
             catch (err) {

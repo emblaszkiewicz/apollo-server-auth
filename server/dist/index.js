@@ -3,14 +3,12 @@ import { ApolloServer } from '@apollo/server';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import { expressMiddleware } from '@apollo/server/express4';
 import express from 'express';
-import session from 'express-session';
-import bodyParser from 'body-parser';
 import http from 'http';
-import cors from 'cors';
-import User from './models/User.js';
-import { schemaSettings, connectDB } from './settings/settings.js';
 import { WebSocketServer } from 'ws';
 import { useServer } from 'graphql-ws/lib/use/ws';
+import User from './models/User.js';
+import { schemaSettings, connectDB } from './settings/settings.js';
+import middlewares from './middlewares/middlewares.js';
 async function startApolloServer() {
     await connectDB(); //<-- connect database
     const app = express(); //<--- run express server
@@ -37,14 +35,7 @@ async function startApolloServer() {
     });
     await server.start(); //<-- start server
     app.use(//<-- set middleware
-    '/', cors(), bodyParser.json(), session({
-        secret: "secret",
-        resave: false,
-        saveUninitialized: true,
-        cookie: {
-            maxAge: 1000 * 60 * 60 * 24,
-        },
-    }), expressMiddleware(server, {
+    ...middlewares, expressMiddleware(server, {
         context: async ({ req }) => ({
             session: req.session,
             user: await User.findOne({ userName: req.session.userName })
