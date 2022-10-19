@@ -16,4 +16,7 @@ type Query {
 type Mutation {
     addBook(bookAuthor: String, bookTitle: String, bookDesc: String): Book
 }
+type Subscription {
+    bookAdded(bookAuthor: String, bookTitle: String, bookDesc: String): Book
+}
 `;

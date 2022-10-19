@@ -1,4 +1,5 @@
 import { Types } from 'mongoose';
+import { Request } from 'express';
 
 export type TBook = {
     bookAuthor: string;
@@ -41,4 +42,4 @@ export type TContext<T> = {
 export type TPagination = {
     limitPerPage: number;
     page: number;
-}
+};

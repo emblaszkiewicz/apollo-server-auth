@@ -1,6 +1,9 @@
 import Book from '../../models/Book.js';
 import { TBook, TPagination } from '../../types/types.js';
 import { GraphQLError } from 'graphql';
+import { PubSub } from 'graphql-subscriptions';
+
+const pubsub = new PubSub();
 
 export const booksResolvers = {
     Query: {
@@ -26,10 +29,16 @@ export const booksResolvers = {
                 const { bookAuthor, bookTitle, bookDesc } = args;
                 const newBook = new Book({ bookAuthor, bookTitle, bookDesc });
                 await newBook.save();
+                await pubsub.publish('BOOK_CREATED', { bookAdded: newBook });
                 return newBook;
             } catch (err) {
                 throw new GraphQLError(`Error: ${err}`);
             }
         },
+    },
+    Subscription: {
+        bookAdded: {
+            subscribe: () => pubsub.asyncIterator(['BOOK_CREATED']),
+        }
     }
 };

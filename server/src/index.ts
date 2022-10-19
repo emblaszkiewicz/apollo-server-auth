@@ -7,28 +7,34 @@ import session from 'express-session';
 import bodyParser from 'body-parser';
 import http from 'http';
 import cors from 'cors';
-import { typeDefs } from './typeDefs/index.js';
-import { resolvers } from './resolvers/index.js';
-import mongoose from 'mongoose';
 import User from './models/User.js';
-import { applyMiddleware } from 'graphql-middleware';
-import { makeExecutableSchema } from "@graphql-tools/schema"
-import permissions from './utils/permissions.js';
+import { schemaSettings, connectDB } from './settings/settings.js';
+import { WebSocketServer } from 'ws';
+import { useServer } from 'graphql-ws/lib/use/ws';
 
 async function startApolloServer() {
-    mongoose.connect(process.env.DB_URI)        //<-- connect database
-        .then(() => console.log('Connected to the database!'));
+    await connectDB();      //<-- connect database
     const app = express();      //<--- run express server
     const httpServer = http.createServer(app);
+    const wsServer = new WebSocketServer({      //<-- create WebSocket server
+        server: httpServer,
+        path: '/',
+    });
+    const serverCleanup = useServer({ schema: schemaSettings }, wsServer);
     const server = new ApolloServer({       //<-- new ApolloServer instance
-        schema: applyMiddleware(
-            makeExecutableSchema({
-                typeDefs,
-                resolvers,
-            }),
-            permissions
-        ),
-        plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],       //<-- add plugins for httpServer
+        schema: schemaSettings,
+        plugins: [
+            ApolloServerPluginDrainHttpServer({ httpServer }),
+            {
+                async serverWillStart() {
+                    return {
+                        async drainServer() {
+                            await serverCleanup.dispose();
+                        },
+                    };
+                },
+            },
+        ],
     });
     await server.start();       //<-- start server
     app.use(        //<-- set middleware
