@@ -47,6 +47,15 @@ export type TPagination = {
     page: number;
 };
 
+export type TFilterBooks = {
+    bookAuthor: string;
+    bookTitle: string;
+    bookDesc: string;
+    genre: string;
+    limitPerPage: number;
+    page: number;
+};
+
 export enum TGenres {
     Fiction = 'fiction',
     Thriller = 'thriller',

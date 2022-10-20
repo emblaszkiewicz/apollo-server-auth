@@ -1,5 +1,5 @@
 import Book from '../../models/Book.js';
-import { TBook, TGenres, TPagination } from '../../types/types.js';
+import { TBook, TGenres, TFilterBooks } from '../../types/types.js';
 import { GraphQLError, subscribe } from 'graphql';
 import { PubSub, withFilter } from 'graphql-subscriptions';
 
@@ -7,12 +7,13 @@ const pubsub = new PubSub();
 
 export const booksResolvers = {
     Query: {
-        async filterBooks<T>(parent: T, { filterInput: { bookAuthor, bookTitle, bookDesc, genre }, pagination: { limitPerPage, page } }) {
+        async filterBooks<T>(parent: T, args: TFilterBooks) {
+            const { limitPerPage, page } = args;
             const filters = {
-                bookAuthor: {$regex: bookAuthor || '', $options: 'i'},
-                bookTitle: {$regex: bookTitle || '', $options: 'i'},
-                bookDesc: {$regex: bookDesc || '', $options: 'i'},
-                genre: {$regex: genre || '', $options: 'i'},
+                bookAuthor: {$regex: args.bookAuthor || '', $options: 'i'},
+                bookTitle: {$regex: args.bookTitle || '', $options: 'i'},
+                bookDesc: {$regex: args.bookDesc || '', $options: 'i'},
+                genre: {$regex: args.genre || '', $options: 'i'},
             };
             const books = await Book.find(filters).limit(limitPerPage).skip((page -1 ) * limitPerPage);
             const count = await Book.countDocuments(filters);
