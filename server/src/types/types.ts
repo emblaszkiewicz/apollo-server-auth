@@ -51,7 +51,14 @@ export enum TGenres {
     Fiction = 'fiction',
     Thriller = 'thriller',
     Drama = 'drama',
-}
+};
+
+export enum TFilters {
+    Author = 'author',
+    Title = 'title',
+    Desc = 'desc',
+    Genre = 'genre',
+};
 
 declare module "express" {
     export interface Request {

@@ -9,7 +9,8 @@ const permissions = shield({
     Query: {
         getAllBooks: (isLogIn),
         getUser: (isLogIn),
-        pagination: (isLogIn)
+        pagination: (isLogIn),
+        filterBooks: (isLogIn)
     },
     Mutation: {
         addBook: (isLogIn),

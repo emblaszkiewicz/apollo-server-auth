@@ -19,6 +19,15 @@ export const booksResolvers = {
                 page,
                 totalPages: Math.ceil(count / limitPerPage)
             };
+        },
+        async filterBooks(parent, args) {
+            const filters = {
+                bookAuthor: { $regex: args.bookAuthor || '', $options: 'i' },
+                bookTitle: { $regex: args.bookTitle || '', $options: 'i' },
+                bookDesc: { $regex: args.bookDesc || '', $options: 'i' },
+                genre: { $regex: args.genre || '', $options: 'i' },
+            };
+            return Book.find(filters);
         }
     },
     Mutation: {
@@ -50,5 +59,5 @@ export const booksResolvers = {
         Fiction: TGenres.Fiction,
         Thriller: TGenres.Thriller,
         Drama: TGenres.Drama
-    }
+    },
 };
