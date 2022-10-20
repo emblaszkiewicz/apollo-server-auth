@@ -5,15 +5,23 @@ type Book {
     bookDesc: String
     genre: String
 }
-type Pagination {
+type FilterBooks {
     books: [Book]
     page: Int
     totalPages: Int
 }
+input BookInput {
+    bookAuthor: String
+    bookTitle: String
+    bookDesc: String
+    genre: String
+}
+input PaginationInput {
+    limitPerPage: Int
+    page: Int
+}
 type Query {
-    getAllBooks: [Book]
-    pagination(limitPerPage: Int, page: Int): Pagination
-    filterBooks(bookAuthor: String, bookTitle: String, bookDesc: String, genre: String): [Book]
+    filterBooks(filterInput: BookInput, pagination: PaginationInput): FilterBooks
 }
 type Mutation {
     addBook(bookAuthor: String, bookTitle: String, bookDesc: String, genre: TGenres): Book

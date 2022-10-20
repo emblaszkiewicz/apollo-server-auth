@@ -11,9 +11,7 @@ const isAdmin = rule()(async<T> (parent: T, args: T, context: TContext<TUser>) =
 
 const permissions = shield({
     Query: {
-        getAllBooks: (isLogIn),
         getUser: (isLogIn),
-        pagination: (isLogIn),
         filterBooks: (isLogIn)
     },
     Mutation: {

@@ -7,9 +7,7 @@ const isAdmin = rule()(async (parent, args, context) => {
 });
 const permissions = shield({
     Query: {
-        getAllBooks: (isLogIn),
         getUser: (isLogIn),
-        pagination: (isLogIn),
         filterBooks: (isLogIn)
     },
     Mutation: {

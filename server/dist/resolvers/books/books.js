@@ -5,29 +5,20 @@ import { PubSub, withFilter } from 'graphql-subscriptions';
 const pubsub = new PubSub();
 export const booksResolvers = {
     Query: {
-        async getAllBooks() {
-            return Book.find();
-        },
-        async pagination(parent, args) {
-            const { limitPerPage, page } = args;
-            const books = await Book.find()
-                .limit(limitPerPage)
-                .skip((page - 1) * limitPerPage);
-            const count = await Book.countDocuments();
+        async filterBooks(parent, { filterInput: { bookAuthor, bookTitle, bookDesc, genre }, pagination: { limitPerPage, page } }) {
+            const filters = {
+                bookAuthor: { $regex: bookAuthor || '', $options: 'i' },
+                bookTitle: { $regex: bookTitle || '', $options: 'i' },
+                bookDesc: { $regex: bookDesc || '', $options: 'i' },
+                genre: { $regex: genre || '', $options: 'i' },
+            };
+            const books = await Book.find(filters).limit(limitPerPage).skip((page - 1) * limitPerPage);
+            const count = await Book.countDocuments(filters);
             return {
                 books,
                 page,
                 totalPages: Math.ceil(count / limitPerPage)
             };
-        },
-        async filterBooks(parent, args) {
-            const filters = {
-                bookAuthor: { $regex: args.bookAuthor || '', $options: 'i' },
-                bookTitle: { $regex: args.bookTitle || '', $options: 'i' },
-                bookDesc: { $regex: args.bookDesc || '', $options: 'i' },
-                genre: { $regex: args.genre || '', $options: 'i' },
-            };
-            return Book.find(filters);
         }
     },
     Mutation: {
