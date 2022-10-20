@@ -53,13 +53,6 @@ export enum TGenres {
     Drama = 'drama',
 };
 
-export enum TFilters {
-    Author = 'author',
-    Title = 'title',
-    Desc = 'desc',
-    Genre = 'genre',
-};
-
 declare module "express" {
     export interface Request {
         session: TSession;
