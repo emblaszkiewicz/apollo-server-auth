@@ -3,6 +3,7 @@ type Book {
     bookAuthor: String
     bookTitle: String
     bookDesc: String
+    genre: String
 }
 type Pagination {
     books: [Book]
@@ -14,9 +15,15 @@ type Query {
     pagination(limitPerPage: Int, page: Int): Pagination
 }
 type Mutation {
-    addBook(bookAuthor: String, bookTitle: String, bookDesc: String): Book
+    addBook(bookAuthor: String, bookTitle: String, bookDesc: String, genre: TGenres): Book
 }
 type Subscription {
     bookAdded: Book
+    filterBookAdded(genre: TGenres): Book
+}
+enum TGenres {
+    Fiction
+    Thriller
+    Drama
 }
 `;

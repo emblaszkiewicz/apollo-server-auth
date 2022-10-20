@@ -4,6 +4,7 @@ export type TBook = {
     bookAuthor: string;
     bookTitle: string;
     bookDesc: string;
+    genre: string;
 };
 
 export type TUser = {
@@ -45,6 +46,12 @@ export type TPagination = {
     limitPerPage: number;
     page: number;
 };
+
+export enum TGenres {
+    Fiction = 'fiction',
+    Thriller = 'thriller',
+    Drama = 'drama',
+}
 
 declare module "express" {
     export interface Request {

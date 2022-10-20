@@ -1,7 +1,7 @@
 import Book from '../../models/Book.js';
-import { TBook, TPagination } from '../../types/types.js';
-import { GraphQLError } from 'graphql';
-import { PubSub } from 'graphql-subscriptions';
+import { TBook, TPagination, TGenres } from '../../types/types.js';
+import {GraphQLError, subscribe} from 'graphql';
+import {PubSub, withFilter} from 'graphql-subscriptions';
 
 const pubsub = new PubSub();
 
@@ -26,10 +26,11 @@ export const booksResolvers = {
     Mutation: {
         async addBook<T>(parent: T, args: TBook) {
             try {
-                const { bookAuthor, bookTitle, bookDesc } = args;
-                const newBook = new Book({ bookAuthor, bookTitle, bookDesc });
+                const { bookAuthor, bookTitle, bookDesc, genre } = args;
+                const newBook = new Book({ bookAuthor, bookTitle, bookDesc, genre });
                 await newBook.save();
                 await pubsub.publish('BOOK_CREATED', { bookAdded: newBook });
+                await pubsub.publish('FILTER_BOOK_CREATED', { filterBookAdded: newBook });
                 return newBook;
             } catch (err) {
                 throw new GraphQLError(`Error: ${err}`);
@@ -39,6 +40,19 @@ export const booksResolvers = {
     Subscription: {
         bookAdded: {
             subscribe: () => pubsub.asyncIterator(['BOOK_CREATED']),
+        },
+        filterBookAdded: {
+            subscribe: withFilter(
+                () => pubsub.asyncIterator(['FILTER_BOOK_CREATED']),
+                (payload, args) => {
+                    return payload.filterBookAdded.genre === args.genre;
+                },
+            ),
         }
+    },
+    TGenres: {
+        Fiction: TGenres.Fiction,
+        Thriller: TGenres.Thriller,
+        Drama: TGenres.Drama
     }
 };
