@@ -1,19 +1,22 @@
 import Book from '../../models/Book.js';
-import { TGenres } from '../../types/types.js';
+import { TGenres, TSort } from '../../types/types.js';
 import { GraphQLError } from 'graphql';
 import { PubSub, withFilter } from 'graphql-subscriptions';
 const pubsub = new PubSub();
 export const booksResolvers = {
     Query: {
         async filterBooks(parent, args) {
-            const { limitPerPage, page, bookAuthor, bookTitle, bookDesc, genre } = args;
+            const { limitPerPage, page, bookAuthor, bookTitle, bookDesc, genre, sort } = args;
             const filters = {
                 bookAuthor: { $regex: bookAuthor || '', $options: 'i' },
                 bookTitle: { $regex: bookTitle || '', $options: 'i' },
                 bookDesc: { $regex: bookDesc || '', $options: 'i' },
                 genre: { $regex: genre || '', $options: 'i' },
             };
-            const books = await Book.find(filters).limit(limitPerPage).skip((page - 1) * limitPerPage);
+            const books = await Book.find(filters)
+                .sort(sort ? { bookAuthor: sort } : {})
+                .limit(limitPerPage)
+                .skip((page - 1) * limitPerPage);
             const count = await Book.countDocuments(filters);
             return {
                 books,
@@ -55,4 +58,7 @@ export const booksResolvers = {
         Thriller: TGenres.Thriller,
         Drama: TGenres.Drama
     },
+    TSort: {
+        AuthorAlphabetically: TSort.AuthorAlphabetically,
+    }
 };

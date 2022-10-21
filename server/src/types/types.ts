@@ -58,13 +58,18 @@ export type TFilterBooks = {
     genre: string;
     limitPerPage: number;
     page: number;
+    sort: { $meta: "textScore"; };
 };
 
 export enum TGenres {
     Fiction = 'fiction',
     Thriller = 'thriller',
     Drama = 'drama',
-};
+}
+
+export enum TSort {
+    AuthorAlphabetically = 1,
+}
 
 declare module "express" {
     export interface Request {

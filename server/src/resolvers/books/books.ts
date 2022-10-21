@@ -1,21 +1,25 @@
 import Book from '../../models/Book.js';
-import { TBook, TGenres, TFilterBooks, TGetBook } from '../../types/types.js';
+import { TBook, TGenres, TFilterBooks, TGetBook, TSort } from '../../types/types.js';
 import { GraphQLError, subscribe } from 'graphql';
 import { PubSub, withFilter } from 'graphql-subscriptions';
+import {invokeHooksUntilDefinedAndNonNull} from "@apollo/server/dist/esm/utils/invokeHooks";
 
 const pubsub = new PubSub();
 
 export const booksResolvers = {
     Query: {
         async filterBooks<T>(parent: T, args: TFilterBooks) {
-            const { limitPerPage, page, bookAuthor, bookTitle, bookDesc, genre } = args;
+            const { limitPerPage, page, bookAuthor, bookTitle, bookDesc, genre, sort } = args;
             const filters = {
                 bookAuthor: {$regex: bookAuthor || '', $options: 'i'},
                 bookTitle: {$regex: bookTitle || '', $options: 'i'},
                 bookDesc: {$regex: bookDesc || '', $options: 'i'},
                 genre: {$regex: genre || '', $options: 'i'},
             };
-            const books = await Book.find(filters).limit(limitPerPage).skip((page -1 ) * limitPerPage);
+            const books = await Book.find(filters)
+                .sort(sort? { bookAuthor: sort } : {})
+                .limit(limitPerPage)
+                .skip((page -1 ) * limitPerPage);
             const count = await Book.countDocuments(filters);
             return {
                 books,
@@ -59,4 +63,7 @@ export const booksResolvers = {
         Thriller: TGenres.Thriller,
         Drama: TGenres.Drama
     },
+    TSort: {
+        AuthorAlphabetically: TSort.AuthorAlphabetically,
+    }
 };
