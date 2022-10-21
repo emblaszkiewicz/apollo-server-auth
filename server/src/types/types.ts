@@ -46,11 +46,6 @@ export type TContext<T> = {
     user: T;
 };
 
-export type TPagination = {
-    limitPerPage: number;
-    page: number;
-};
-
 export type TFilterBooks = {
     bookAuthor: string;
     bookTitle: string;
