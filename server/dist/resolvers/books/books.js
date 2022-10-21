@@ -14,7 +14,7 @@ export const booksResolvers = {
                 genre: { $regex: genre || '', $options: 'i' },
             };
             const books = await Book.find(filters)
-                .sort(sort ? { bookAuthor: sort } : {})
+                .sort(sort)
                 .limit(limitPerPage)
                 .skip((page - 1) * limitPerPage);
             const count = await Book.countDocuments(filters);
@@ -59,6 +59,7 @@ export const booksResolvers = {
         Drama: TGenres.Drama
     },
     TSort: {
-        AuthorAlphabetically: TSort.AuthorAlphabetically,
+        AuthorAlphabetically: { bookAuthor: TSort.AuthorAlphabetically },
+        TitleAlphabetically: { bookTitle: TSort.TitleAlphabetically }
     }
 };

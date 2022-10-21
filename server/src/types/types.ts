@@ -1,4 +1,4 @@
-import { Types } from 'mongoose';
+import { Types, SortOrder } from 'mongoose';
 
 export type TBook = {
     bookAuthor: string;
@@ -58,17 +58,18 @@ export type TFilterBooks = {
     genre: string;
     limitPerPage: number;
     page: number;
-    sort: { $meta: "textScore"; };
+    sort: string | { [key: string]: SortOrder | { $meta: "textScore"; }; } | [string, SortOrder][];
 };
 
 export enum TGenres {
-    Fiction = 'fiction',
-    Thriller = 'thriller',
-    Drama = 'drama',
+    Fiction = 'Fiction',
+    Thriller = 'Thriller',
+    Drama = 'Drama',
 }
 
 export enum TSort {
     AuthorAlphabetically = 1,
+    TitleAlphabetically = 1,
 }
 
 declare module "express" {

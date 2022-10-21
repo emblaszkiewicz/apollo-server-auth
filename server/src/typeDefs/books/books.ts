@@ -34,5 +34,6 @@ enum TGenres {
 }
 enum TSort {
     AuthorAlphabetically
+    TitleAlphabetically
 }
 `;
