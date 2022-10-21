@@ -10,7 +10,14 @@ type FilterBooks {
     page: Int
     totalPages: Int
 }
+input BookInput {
+    bookAuthor: String
+    bookTitle: String
+    bookDesc: String
+    genre: TGenres
+}
 type Query {
+    findBookByID(_id: ID!): Book
     filterBooks(bookAuthor: String, bookTitle: String, bookDesc: String, genre: TGenres, limitPerPage: Int, page: Int): FilterBooks
 }
 type Mutation {

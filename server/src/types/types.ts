@@ -19,6 +19,10 @@ export type TGetUser = {
     id: string;
 };
 
+export type TGetBook = {
+    _id: string;
+};
+
 export type TEditUser = {
     id: string;
     userName: string;
