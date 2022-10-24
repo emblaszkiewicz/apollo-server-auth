@@ -1,6 +1,6 @@
-import User from '../../models/User.js';
+import User from '../../models/User';
 import bcrypt from 'bcryptjs';
-import { TEditUser, TGetUser, TUser, TContext } from '../../types/types.js';
+import { TEditUser, TGetUser, TUser, TContext } from '../../types/types';
 import { GraphQLError } from 'graphql';
 
 export const usersResolvers = {

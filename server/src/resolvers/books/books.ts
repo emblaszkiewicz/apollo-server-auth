@@ -1,5 +1,5 @@
-import Book from '../../models/Book.js';
-import { TBook, TGenres, TFilterBooks, TGetBook, TSort } from '../../types/types.js';
+import Book from '../../models/Book';
+import { TBook, TGenres, TFilterBooks, TGetBook, TSort } from '../../types/types';
 import { GraphQLError, subscribe } from 'graphql';
 import { PubSub, withFilter } from 'graphql-subscriptions';
 

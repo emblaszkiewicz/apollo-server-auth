@@ -1,4 +1,4 @@
-import { typeBooks } from './books/books.js';
-import { typeUsers } from './users/users.js';
+import { typeBooks } from './books/books';
+import { typeUsers } from './users/users';
 
 export const typeDefs = [typeBooks, typeUsers];

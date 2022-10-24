@@ -1,4 +1,4 @@
-import { booksResolvers } from './books/books.js';
-import { usersResolvers } from './users/users.js';
+import { booksResolvers } from './books/books';
+import { usersResolvers } from './users/users';
 
 export const resolvers = [booksResolvers, usersResolvers];

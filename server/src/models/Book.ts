@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-import { TBook } from '../types/types.js';
+import { TBook } from '../types/types';
 
 const BookSchema: Schema<TBook> = new Schema ({
     bookAuthor: { type: String, required: true },

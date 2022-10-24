@@ -6,9 +6,9 @@ import express from 'express';
 import http from 'http';
 import { WebSocketServer } from 'ws';
 import { useServer } from 'graphql-ws/lib/use/ws';
-import User from './models/User.js';
-import { schemaSettings, connectDB } from './settings/settings.js';
-import middlewares from './middlewares/middlewares.js';
+import User from './models/User';
+import { schemaSettings, connectDB } from './settings/settings';
+import middlewares from './middlewares/middlewares';
 
 async function startApolloServer() {
     await connectDB();      //<-- connect database
