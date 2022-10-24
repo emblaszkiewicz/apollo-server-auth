@@ -6,7 +6,7 @@
   "scripts": {
     "compile": "tsc",
     "postinstall": "npm run compile",
-    "start": "ts-node-dev --respawn --transpile-only src/index.ts"
+    "start": "ts-node-dev --poll --respawn --transpile-only src/index.ts"
   },
   "keywords": [],
   "author": "",

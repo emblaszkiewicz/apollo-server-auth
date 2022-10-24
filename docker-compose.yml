@@ -1,0 +1,23 @@
+version: '3.7'
+services:
+  server:
+    container_name: apollo-node-server
+    restart: always
+    build: .
+    ports:
+      - '4000:4000'
+    environment:
+      DB_URI: mongodb://db:27017/BooksDB
+    volumes:
+      - ./server:/app
+  db:
+    container_name: mongoDB
+    restart: always
+    image: mongo
+    ports:
+      - '27017:27017'
+    volumes:
+      - ./data:/data/db
+volumes:
+  db:
+    driver: local
