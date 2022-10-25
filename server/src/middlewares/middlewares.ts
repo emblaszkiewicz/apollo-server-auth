@@ -3,7 +3,7 @@ import bodyParser from 'body-parser';
 import session from 'express-session';
 
 const middlewares = [
-    '/',
+    '/graphql',
     cors<cors.CorsRequest>(),
     bodyParser.json(),
     session({

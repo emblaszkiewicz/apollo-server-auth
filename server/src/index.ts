@@ -9,6 +9,7 @@ import { useServer } from 'graphql-ws/lib/use/ws';
 import User from './models/User';
 import { schemaSettings, connectDB } from './settings/settings';
 import middlewares from './middlewares/middlewares';
+import googleRoutes from './routes/googleRoutes';
 
 async function startApolloServer() {
     await connectDB();      //<-- connect database
@@ -16,7 +17,7 @@ async function startApolloServer() {
     const httpServer = http.createServer(app);
     const wsServer = new WebSocketServer({      //<-- create WebSocket server
         server: httpServer,
-        path: '/',
+        path: '/graphql',
     });
     const serverCleanup = useServer({ schema: schemaSettings }, wsServer);
     const server = new ApolloServer({       //<-- new ApolloServer instance
@@ -45,6 +46,7 @@ async function startApolloServer() {
                 }),
         }),
     );
+    app.use('/google', googleRoutes);
     await new Promise<void>((resolve) =>
         httpServer.listen({ port: 4000 }, resolve),
     );
