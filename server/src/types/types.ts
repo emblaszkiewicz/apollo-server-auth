@@ -60,12 +60,14 @@ export enum TGenres {
     Fiction = 'Fiction',
     Thriller = 'Thriller',
     Drama = 'Drama',
-}
+};
 
 export enum TSort {
     AuthorAlphabetically = 1,
     TitleAlphabetically = 1,
-}
+};
+
+export type TObject = Record<string, any>;
 
 declare module "express" {
     export interface Request {
