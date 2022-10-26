@@ -1,17 +1,16 @@
 import passport from 'passport';
 const GoogleStrategy = require( 'passport-google-oauth2' ).Strategy;
+import Settings from '../models/Settings';
 
 passport.use(new GoogleStrategy({
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: "http://localhost:4000/auth/google/callback",
-        passReqToCallback   : true
+        callbackURL: 'http://localhost:4000/auth/google/callback',
+        passReqToCallback: true,
     },
-    function(request, accessToken, refreshToken, profile, done) {
+    async function(request, accessToken, refreshToken, profile, done) {
+        await new Settings({ refreshToken }).save();
         done(null, profile);
-        // User.findOrCreate({ googleId: profile.id }, function (err, user) {
-        //     return done(err, user);
-        // });
     }
 ));
 

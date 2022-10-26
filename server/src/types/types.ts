@@ -8,10 +8,12 @@ export type TBook = {
 };
 
 export type TUser = {
+    googleId: string,
     _id: Types.ObjectId;
     userName: string;
     email: string;
     password: string;
+    refreshToken: string,
     role: string;
 };
 
@@ -56,16 +58,20 @@ export type TFilterBooks = {
     sort: string | { [key: string]: SortOrder | { $meta: "textScore"; }; } | [string, SortOrder][];
 };
 
+export type TSettings = {
+    refreshToken: string;
+};
+
 export enum TGenres {
     Fiction = 'Fiction',
     Thriller = 'Thriller',
     Drama = 'Drama',
-};
+}
 
 export enum TSort {
     AuthorAlphabetically = 1,
     TitleAlphabetically = 1,
-};
+}
 
 export type TObject = Record<string, any>;
 

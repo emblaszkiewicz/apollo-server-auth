@@ -8,12 +8,13 @@ import { WebSocketServer } from 'ws';
 import { useServer } from 'graphql-ws/lib/use/ws';
 import User from './models/User';
 import { schemaSettings, connectDB } from './settings/settings';
-import middlewares from './middlewares/middlewares';
 import './settings/strategy';
 import passport from 'passport';
 import session from 'express-session';
 import authRoutes from './routes/authRoutes';
 import userRoutes from './routes/userRoutes';
+import bodyParser from "body-parser";
+import cors from 'cors';
 
 async function startApolloServer() {
     await connectDB();      //<-- connect database
@@ -40,8 +41,18 @@ async function startApolloServer() {
         ],
     });
     await server.start();       //<-- start server
+    app.use(session({
+        secret: "secret",
+        resave: false,
+        saveUninitialized: true,
+        cookie: {
+            maxAge: 1000 * 60 * 60 * 24,
+        },
+    }));
     app.use(        //<-- set middleware
-        ...middlewares,
+        '/graphql',
+        cors<cors.CorsRequest>(),
+        bodyParser.json(),
         expressMiddleware(server, {     //<-- add to apollo context
             context: async({ req }) => (
                 {
@@ -50,7 +61,6 @@ async function startApolloServer() {
                 }),
         }),
     );
-    app.use(session({ secret: "secret", resave: false, saveUninitialized: true, }));
     app.use(passport.initialize());
     app.use(passport.session());
     app.use('/auth', authRoutes);

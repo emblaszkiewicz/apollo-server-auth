@@ -1,6 +1,6 @@
 import passport from 'passport';
 
-const login = passport.authenticate('google', { scope: ['email', 'profile'] });
+const login = passport.authenticate('google', { scope: ['email', 'profile', 'https://www.googleapis.com/auth/calendar'], accessType: 'offline'});
 const callback = passport.authenticate('google', {
     successRedirect: '/user/logged',
     failureRedirect: '/user/no-permission',
