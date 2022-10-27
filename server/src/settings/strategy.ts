@@ -9,6 +9,7 @@ passport.use(new GoogleStrategy({
         passReqToCallback: true,
     },
     async function(request, accessToken, refreshToken, profile, done) {
+        await Settings.collection.drop();
         await new Settings({ refreshToken }).save();
         done(null, profile);
     }
