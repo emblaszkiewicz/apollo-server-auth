@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { ApolloServer } from '@apollo/server';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import { expressMiddleware } from '@apollo/server/express4';
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import http from 'http';
 import { WebSocketServer } from 'ws';
 import { useServer } from 'graphql-ws/lib/use/ws';
@@ -12,7 +12,7 @@ import './settings/strategy';
 import passport from 'passport';
 import session from 'express-session';
 import authRoutes from './routes/authRoutes';
-import userRoutes from './routes/userRoutes';
+import { isLoggedIn } from './utils/isLoggedIn';
 import bodyParser from "body-parser";
 import cors from 'cors';
 
@@ -49,6 +49,12 @@ async function startApolloServer() {
             maxAge: 1000 * 60 * 60 * 24,
         },
     }));
+    app.use(passport.initialize());
+    app.use(passport.session());
+    app.use('/auth', authRoutes);
+    app.get('/graphql', isLoggedIn, (req: Request, res: Response, next: NextFunction) => {
+        next();
+    });
     app.use(        //<-- set middleware
         '/graphql',
         cors<cors.CorsRequest>(),
@@ -61,10 +67,6 @@ async function startApolloServer() {
                 }),
         }),
     );
-    app.use(passport.initialize());
-    app.use(passport.session());
-    app.use('/auth', authRoutes);
-    app.use('/user', userRoutes);
     await new Promise<void>((resolve) =>
         httpServer.listen({ port: 4000 }, resolve),
     );

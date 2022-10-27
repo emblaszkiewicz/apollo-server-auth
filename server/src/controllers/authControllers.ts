@@ -1,15 +1,20 @@
 import passport from 'passport';
+import { Request, Response } from "express";
 
-const login = passport.authenticate('google', { scope: ['email', 'profile', 'https://www.googleapis.com/auth/calendar'], accessType: 'offline', prompt: "consent"});
-const callback = passport.authenticate('google', {
-    successRedirect: '/user/logged',
-    failureRedirect: '/user/no-permission',
+const handleLogin = passport.authenticate('google', { scope: ['email', 'profile', 'https://www.googleapis.com/auth/calendar'], accessType: 'offline', prompt: "consent"});
+const handleCallback = passport.authenticate('google', {
+    successRedirect: '/graphql',
+    failureRedirect: '/auth/failure',
 });
-const logout = (req, res) => {
+const handleLogout = async (req: Request, res: Response) => {
     req.logout(function (err) {
         if(err) { return (err); }
         res.redirect('/auth/google');
     });
 };
 
-export default { login, callback, logout };
+const handleFailure = async (req: Request, res: Response) => {
+    res.send('Login failed!');
+};
+
+export default { handleLogin, handleCallback, handleLogout, handleFailure };

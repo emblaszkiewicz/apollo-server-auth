@@ -1,4 +1,5 @@
 import { Types, SortOrder } from 'mongoose';
+import {AuthenticateOptions} from "passport";
 
 export type TBook = {
     bookAuthor: string;
@@ -41,6 +42,7 @@ export type TSession = {
     userName: string;
     isLogin: boolean;
     isAdmin: boolean;
+    passport: any;
 }
 
 export type TContext<T> = {
@@ -73,10 +75,14 @@ export enum TSort {
     TitleAlphabetically = 1,
 }
 
-export type TObject = Record<string, any>;
-
 declare module "express" {
     export interface Request {
         session: TSession;
+    }
+}
+
+declare module "passport" {
+    export interface AuthenticateOptions {
+        accessType?: string,
     }
 }

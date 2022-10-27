@@ -1,8 +1,16 @@
 export const typeCalendar = `#graphql
     type Calendar {
-        refreshToken: String
+        summary: String
+        organizer: String
+        start: String
+        end: String
+        status: String
+        hangoutLink: String
     }
     type Query {
-        getCalendar: Calendar
+        getCalendarEvents: [Calendar]
+    }
+    type Mutation {
+        addCalendarEvent(summary: String, organizer: String, start: String, end: String, status: String, link: String, email: String): Calendar
     }
 `;
