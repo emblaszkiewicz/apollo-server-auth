@@ -64,6 +64,15 @@ export type TSettings = {
     refreshToken: string;
 };
 
+export type TAddEvent = {
+    summary: string;
+    organizer: string;
+    start: string;
+    end: string;
+    status: string;
+    hangoutLink: string;
+};
+
 export enum TGenres {
     Fiction = 'Fiction',
     Thriller = 'Thriller',

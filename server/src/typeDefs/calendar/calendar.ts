@@ -11,6 +11,6 @@ export const typeCalendar = `#graphql
         getCalendarEvents: [Calendar]
     }
     type Mutation {
-        addCalendarEvent(summary: String, organizer: String, start: String, end: String, status: String, link: String, email: String): Calendar
+        addCalendarEvent(summary: String, organizer: String, start: String, end: String, status: String, hangoutLink: String): Calendar
     }
 `;
