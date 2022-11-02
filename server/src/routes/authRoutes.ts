@@ -7,5 +7,6 @@ router.get('/google', controller.handleLogin);
 router.get('/google/callback', controller.handleCallback);
 router.get('/logout', controller.handleLogout);
 router.get('/failure', controller.handleFailure);
+router.get('/user', controller.handleUser);
 
 export default router;

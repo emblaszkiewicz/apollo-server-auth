@@ -47,7 +47,7 @@ export type TSession = {
 
 export type TContext<T> = {
     session: TSession;
-    user: T;
+    user: any;
 };
 
 export type TFilterBooks = {

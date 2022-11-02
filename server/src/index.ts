@@ -6,7 +6,6 @@ import express, { Request, Response, NextFunction } from 'express';
 import http from 'http';
 import { WebSocketServer } from 'ws';
 import { useServer } from 'graphql-ws/lib/use/ws';
-import User from './models/User';
 import { schemaSettings, connectDB } from './settings/settings';
 import './settings/strategy';
 import passport from 'passport';
@@ -15,6 +14,7 @@ import authRoutes from './routes/authRoutes';
 import { isLoggedIn } from './utils/isLoggedIn';
 import bodyParser from "body-parser";
 import cors from 'cors';
+import expressPlayground from 'graphql-playground-middleware-express';
 
 async function startApolloServer() {
     await connectDB();      //<-- connect database
@@ -41,6 +41,11 @@ async function startApolloServer() {
         ],
     });
     await server.start();       //<-- start server
+    app.use(cors({
+        origin: "http://localhost:3000",
+        methods: "GET, POST, PUT, DELETE",
+        credentials: true
+    }));
     app.use(session({
         secret: "secret",
         resave: false,
@@ -49,21 +54,20 @@ async function startApolloServer() {
             maxAge: 1000 * 60 * 60 * 24,
         },
     }));
+    app.use(bodyParser.json());
     app.use(passport.initialize());
     app.use(passport.session());
     app.use('/auth', authRoutes);
     app.get('/graphql', isLoggedIn, (req: Request, res: Response, next: NextFunction) => {
         next();
     });
+    app.get("/playground", expressPlayground({ endpoint: "/graphql" }));
     app.use(        //<-- set middleware
         '/graphql',
-        cors<cors.CorsRequest>(),
-        bodyParser.json(),
         expressMiddleware(server, {     //<-- add to apollo context
             context: async({ req }) => (
                 {
                     session: req.session,
-                    user: await User.findOne({ userName: req.session.userName })
                 }),
         }),
     );

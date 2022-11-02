@@ -7,8 +7,8 @@ const pubsub = new PubSub();
 
 export const booksResolvers = {
     Query: {
-        async filterBooks<T>(parent: T, args: TFilterBooks, context) {
-            console.log(context.session);
+        async filterBooks<T>(parent: T, args: TFilterBooks, ctx) {
+            console.log(ctx);
             const { limitPerPage, page, bookAuthor, bookTitle, bookDesc, genre, sort } = args;
             const filters = {
                 bookAuthor: {$regex: bookAuthor || '', $options: 'i'},

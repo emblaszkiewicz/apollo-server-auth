@@ -14,6 +14,6 @@ export const schemaSettings = applyMiddleware(
 )
 
 export const connectDB = () => {
-    return mongoose.connect(process.env.DB_URI)
+    return mongoose.connect('mongodb://localhost:27017/BooksDB')
         .then(() => console.log('Connected to the database!'));
 };
