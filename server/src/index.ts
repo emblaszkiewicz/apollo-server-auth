@@ -11,7 +11,6 @@ import './settings/strategy';
 import passport from 'passport';
 import session from 'express-session';
 import authRoutes from './routes/authRoutes';
-import { isLoggedIn } from './utils/isLoggedIn';
 import bodyParser from "body-parser";
 import cors from 'cors';
 import expressPlayground from 'graphql-playground-middleware-express';
@@ -58,9 +57,6 @@ async function startApolloServer() {
     app.use(passport.initialize());
     app.use(passport.session());
     app.use('/auth', authRoutes);
-    app.get('/graphql', isLoggedIn, (req: Request, res: Response, next: NextFunction) => {
-        next();
-    });
     app.get("/playground", expressPlayground({ endpoint: "/graphql" }));
     app.use(        //<-- set middleware
         '/graphql',

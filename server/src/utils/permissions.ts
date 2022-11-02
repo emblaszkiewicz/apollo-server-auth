@@ -1,4 +1,4 @@
-import { shield, rule, and } from 'graphql-shield';
+import { shield, rule } from 'graphql-shield';
 import { TContext, TUser } from '../types/types';
 
 const isLogIn = rule()(async<T> (parent: T, args: T, context: TContext<TUser>) => {
@@ -11,20 +11,20 @@ const isAdmin = rule()(async<T> (parent: T, args: T, context: TContext<TUser>) =
 
 const permissions = shield({
     Query: {
-        //getUser: (isLogIn),
+        getUser: (isLogIn),
         filterBooks: (isLogIn),
-        //findBookByID: (isLogIn),
-        //getCalendarEvents: (isLogIn)
+        findBookByID: (isLogIn),
+        getCalendarEvents: (isLogIn)
     },
     Mutation: {
-        //addBook: (isLogIn),
-        //editUser: and(isLogIn, isAdmin),
-        //logout: (isLogIn),
-        //addCalendarEvent: (isLogIn)
+        addBook: (isLogIn),
+        editUser: (isLogIn),
+        logout: (isLogIn),
+        addCalendarEvent: (isLogIn)
     },
     Subscription: {
-        //bookAdded: (isLogIn),
-        //filterBookAdded: (isLogIn)
+        bookAdded: (isLogIn),
+        filterBookAdded: (isLogIn)
     }
 });
 

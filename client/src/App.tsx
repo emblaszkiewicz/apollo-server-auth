@@ -37,7 +37,7 @@ const App: FC = (): JSX.Element => {
     window.open('http://localhost:4000/auth/logout', '_self');
   };
 
-  //console.log(user);
+  console.log(user);
 
   const getBooks = gql`
       query Query {
