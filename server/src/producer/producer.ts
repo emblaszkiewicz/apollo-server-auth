@@ -6,12 +6,13 @@ const kafka = new Kafka({
 });
 
 export const send = async (book) => {
+    const test = JSON.stringify(book);
     const producer = kafka.producer();
     await producer.connect();
     await producer.send({
         topic: 'books',
         messages: [
-            { key: 'book', value: book }
+            { key: 'key1', value: test }
         ],
     });
     await producer.disconnect();
