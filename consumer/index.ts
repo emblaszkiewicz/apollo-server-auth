@@ -1,4 +1,4 @@
-import { Kafka } from 'kafkajs';
+import {Kafka} from 'kafkajs';
 
 const kafka = new Kafka({
     clientId: 'my-app',
@@ -6,13 +6,13 @@ const kafka = new Kafka({
 });
 
 export const receive = async () => {
-    const consumer = kafka.consumer({ groupId: 'books-group' });
+    const consumer = kafka.consumer({groupId: 'apollo-app'});
     await consumer.connect();
-    await consumer.subscribe({ topic: 'books', fromBeginning: true });
+    await consumer.subscribe({topics: ['books', 'users'], fromBeginning: true});
     await consumer.run({
-        eachMessage: async ({ topic, partition, message }) => {
+        eachMessage: async ({topic, partition, message}) => {
             console.log({
-                value: message.value.toString(),
+                value: message?.value?.toString(),
             })
         },
     });

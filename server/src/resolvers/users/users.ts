@@ -1,7 +1,8 @@
 import User from '../../models/User';
 import bcrypt from 'bcryptjs';
-import { TEditUser, TGetUser, TUser, TContext } from '../../types/types';
-import { GraphQLError } from 'graphql';
+import {TEditUser, TGetUser, TUser, TContext} from '../../types/types';
+import {GraphQLError} from 'graphql';
+import {send} from '../../producer/producer';
 
 export const usersResolvers = {
     Query: {
@@ -12,13 +13,14 @@ export const usersResolvers = {
     Mutation: {
         async registerUser<T>(parent: T, args: TUser) {
             try {
-                const { userName, email, password } = args;
+                const {userName, email, password} = args;
                 if (!email || !email.toLowerCase().match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i) || !password || password.length < 6) {
                     return new GraphQLError('Invalid email or password');
                 }
                 const codedPassword = await bcrypt.hash(password, 10);
-                const newUser = new User({ userName, email, password: codedPassword });
+                const newUser = new User({userName, email, password: codedPassword});
                 await newUser.save();
+                await send('users', newUser);
                 return newUser;
             } catch (err) {
                 throw new GraphQLError(`Error: ${err}`);
@@ -26,8 +28,8 @@ export const usersResolvers = {
         },
         async loginUser<T>(parent: T, args: TUser, context: TContext<TUser>) {
             try {
-                const { email, password } = args;
-                const user = await User.findOne({ email });
+                const {email, password} = args;
+                const user = await User.findOne({email});
                 if (user && await bcrypt.compare(password, user.password)) {
                     context.session.userName = user.userName;
                     context.session.isLogin = true;
@@ -41,10 +43,10 @@ export const usersResolvers = {
         },
         async editUser<T>(parent: T, args: TEditUser) {
             try {
-                const { id, userName } = args;
+                const {id, userName} = args;
                 await User.updateOne(
-                    { _id: id },
-                    { $set: { userName } }
+                    {_id: id},
+                    {$set: {userName}}
                 );
                 return User.findById(id);
             } catch (err) {
