@@ -1,12 +1,12 @@
 import 'dotenv/config';
-import { ApolloServer } from '@apollo/server';
-import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
-import { expressMiddleware } from '@apollo/server/express4';
-import express, { Request, Response, NextFunction } from 'express';
+import {ApolloServer} from '@apollo/server';
+import {ApolloServerPluginDrainHttpServer} from '@apollo/server/plugin/drainHttpServer';
+import {expressMiddleware} from '@apollo/server/express4';
+import express from 'express';
 import http from 'http';
-import { WebSocketServer } from 'ws';
-import { useServer } from 'graphql-ws/lib/use/ws';
-import { schemaSettings, connectDB } from './settings/settings';
+import {WebSocketServer} from 'ws';
+import {useServer} from 'graphql-ws/lib/use/ws';
+import {schemaSettings, connectDB} from './settings/settings';
 import './settings/strategy';
 import passport from 'passport';
 import session from 'express-session';
@@ -23,11 +23,11 @@ async function startApolloServer() {
         server: httpServer,
         path: '/graphql',
     });
-    const serverCleanup = useServer({ schema: schemaSettings }, wsServer);
+    const serverCleanup = useServer({schema: schemaSettings}, wsServer);
     const server = new ApolloServer({       //<-- new ApolloServer instance
         schema: schemaSettings,
         plugins: [
-            ApolloServerPluginDrainHttpServer({ httpServer }),
+            ApolloServerPluginDrainHttpServer({httpServer}),
             {
                 async serverWillStart() {
                     return {
@@ -57,18 +57,18 @@ async function startApolloServer() {
     app.use(passport.initialize());
     app.use(passport.session());
     app.use('/auth', authRoutes);
-    app.get("/playground", expressPlayground({ endpoint: "/graphql" }));
+    app.get("/playground", expressPlayground({endpoint: "/graphql"}));
     app.use(        //<-- set middleware
         '/graphql',
         expressMiddleware(server, {     //<-- add to apollo context
-            context: async({ req }) => (
+            context: async ({req}) => (
                 {
                     session: req.session,
                 }),
         }),
     );
     await new Promise<void>((resolve) =>
-        httpServer.listen({ port: 4000 }, resolve),
+        httpServer.listen({port: 4000}, resolve),
     );
 }
 

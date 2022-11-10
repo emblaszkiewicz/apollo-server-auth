@@ -2,6 +2,7 @@ import Book from '../../models/Book';
 import { TBook, TGenres, TFilterBooks, TGetBook, TSort } from '../../types/types';
 import { GraphQLError, subscribe } from 'graphql';
 import { PubSub, withFilter } from 'graphql-subscriptions';
+import { send } from '../../producer/producer';
 
 const pubsub = new PubSub();
 
@@ -38,6 +39,7 @@ export const booksResolvers = {
                 await newBook.save();
                 await pubsub.publish('BOOK_CREATED', { bookAdded: newBook });
                 await pubsub.publish('FILTER_BOOK_CREATED', { filterBookAdded: newBook });
+                await send(newBook);
                 return newBook;
             } catch (err) {
                 throw new GraphQLError(`Error: ${err}`);

@@ -3,8 +3,8 @@ import { Request, Response } from "express";
 
 const handleLogin = passport.authenticate('google', { scope: ['email', 'profile', 'https://www.googleapis.com/auth/calendar'], accessType: 'offline', prompt: "consent"});
 const handleCallback = passport.authenticate('google', {
-    //successRedirect: '/graphql',
-    successRedirect: 'http://localhost:3000/',
+    successRedirect: '/graphql',
+    //successRedirect: 'http://localhost:3000/',
     failureRedirect: '/auth/failure',
 });
 const handleLogout = async (req: Request, res: Response) => {
