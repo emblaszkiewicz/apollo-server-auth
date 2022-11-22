@@ -1,11 +1,11 @@
-import { shield, rule } from 'graphql-shield';
-import { TContext, TUser } from '../types/types';
+import {shield, rule} from 'graphql-shield';
+import {TContext, TUser} from '../types/types';
 
-const isLogIn = rule()(async<T> (parent: T, args: T, context: TContext<TUser>) => {
+const isLogIn = rule()(async <T>(parent: T, args: T, context: TContext<TUser>) => {
     return context.session.passport.user !== null;
 });
 
-const isAdmin = rule()(async<T> (parent: T, args: T, context: TContext<TUser>) => {
+const isAdmin = rule()(async <T>(parent: T, args: T, context: TContext<TUser>) => {
     return context.user.role === 'admin';
 });
 

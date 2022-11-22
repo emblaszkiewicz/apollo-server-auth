@@ -23,7 +23,14 @@ async function startApolloServer() {
         server: httpServer,
         path: '/graphql',
     });
-    const serverCleanup = useServer({schema: schemaSettings}, wsServer);
+    const serverCleanup = useServer({
+            schema: schemaSettings,
+            context: async (ctx, msg, args) => {
+                return ctx.connectionParams;
+            }
+        },
+        wsServer
+    );
     const server = new ApolloServer({       //<-- new ApolloServer instance
         schema: schemaSettings,
         plugins: [
@@ -41,7 +48,8 @@ async function startApolloServer() {
     });
     await server.start();       //<-- start server
     app.use(cors({
-        origin: "http://localhost:3000",
+        //origin: "http://localhost:3000",
+        origin: "http://localhost:5173",
         methods: "GET, POST, PUT, DELETE",
         credentials: true
     }));
